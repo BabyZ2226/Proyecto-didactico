@@ -1,0 +1,390 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   REGLAS ESTRICTAS DE SCROLL ÚNICO Y GENERAL + SIN SCROLLS INTERNOS
+   1. Único scroll permitido: el de la ventana principal del navegador (vertical),
+      transparente y fundido con el fondo de la página.
+   2. Sin scrolls internos: ningún contenedor, sección o div tiene barras de
+      desplazamiento internas; crecen naturalmente con height: auto / min-height.
+   ============================================================================ */
+html {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 100%;
+  background-color: #0e0c15;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+body {
+  overflow: visible;
+  height: auto;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #0e0c15;
+}
+
+#root {
+  overflow: visible;
+  height: auto;
+  min-height: 100vh;
+}
+
+/* Barra de desplazamiento principal transparente y mimetizada con el fondo */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Evitar scrolls internos no deseados mientras se preservan los recortes intencionados por GPU */
+main:not([class*="overflow-hidden"]),
+section:not([class*="overflow-hidden"]),
+article:not([class*="overflow-hidden"]),
+aside:not([class*="overflow-hidden"]),
+header:not([class*="overflow-hidden"]),
+footer:not([class*="overflow-hidden"]),
+div:not(.library-invisible-scroll):not([class*="overflow-hidden"]):not([class*="overflow-clip"]) {
+  overflow: visible;
+}
+
+/* Scroll invisible para la Biblioteca */
+html.library-open,
+div.library-invisible-scroll,
+.library-invisible-scroll {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html.library-open::-webkit-scrollbar,
+div.library-invisible-scroll::-webkit-scrollbar,
+.library-invisible-scroll::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+/* Hardware-accelerated GPU compositing classes */
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes float-mote {
+  0% {
+    transform: translate3d(0, -4vh, 0);
+  }
+  50% {
+    transform: translate3d(14px, 50vh, 0);
+  }
+  100% {
+    transform: translate3d(0, 106vh, 0);
+  }
+}
+
+.animate-float-mote {
+  animation: float-mote linear infinite;
+  will-change: transform;
+}
+
+@layer utilities {
+  .font-typewriter {
+    font-family: 'Special Elite', 'Courier Prime', Courier, monospace;
+  }
+  .font-vintage-title {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-arcade {
+    font-family: 'Jersey 15', 'Pixelify Sans', cursive, monospace;
+  }
+  .font-retro-mono {
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .font-medieval {
+    font-family: 'MedievalSharp', 'Pixelify Sans', cursive, serif;
+  }
+  .font-spaced {
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .font-spaced-logo {
+    font-family: 'Orbitron', sans-serif;
+  }
+  
+  /* Hide scrollbars visually while maintaining full touch, mouse wheel and drag scrollability */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Pixel art rendering */
+.pixel-art {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Escape Room Runner Animations */
+@keyframes runner-bounce {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(-3deg);
+  }
+}
+
+@keyframes dust-puff {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6) translateY(-8px) translateX(-4px);
+  }
+}
+
+.animate-runner-bounce {
+  animation: runner-bounce 0.28s infinite linear;
+}
+
+.animate-dust {
+  animation: dust-puff 0.45s forwards ease-out;
+}
+
+/* Horizontal Chase Corridor Animations */
+@keyframes infinite-corridor {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes monster-lunge {
+  0%, 100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  30% {
+    transform: translateY(-6px) rotate(3deg) scale(1.04);
+  }
+  70% {
+    transform: translateY(4px) rotate(-4deg) scale(0.98);
+  }
+}
+
+@keyframes speed-streak {
+  0% {
+    transform: translateX(120%) scaleX(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(-150%) scaleX(2.5);
+    opacity: 0;
+  }
+}
+
+.animate-infinite-corridor {
+  animation: infinite-corridor 8s linear infinite;
+  will-change: transform;
+}
+
+.animate-monster-lunge {
+  animation: monster-lunge 1.2s ease-in-out infinite;
+}
+
+.animate-speed-streak {
+  animation: speed-streak 0.6s linear infinite;
+}
+
+/* Jumpscare & Alert Animations */
+@keyframes violent-screen-shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-14px, 12px) rotate(-2deg); }
+  20% { transform: translate(16px, -14px) rotate(2.5deg); }
+  30% { transform: translate(-20px, -8px) rotate(-3deg); }
+  40% { transform: translate(18px, 16px) rotate(2deg); }
+  50% { transform: translate(-16px, 14px) rotate(-2deg); }
+  60% { transform: translate(14px, -18px) rotate(3deg); }
+  70% { transform: translate(-18px, -10px) rotate(-1.5deg); }
+  80% { transform: translate(16px, 12px) rotate(2deg); }
+  90% { transform: translate(-10px, 14px) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes jumpscare-zoom {
+  0% {
+    transform: scale(0.35) translateY(40px) rotate(-6deg);
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.9)) contrast(120%);
+    opacity: 0.2;
+  }
+  20% {
+    transform: scale(0.9) translateY(10px) rotate(4deg);
+    filter: drop-shadow(0 0 35px rgba(220, 38, 38, 0.9)) contrast(150%);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.9) translateY(-10px) rotate(-3deg);
+    filter: drop-shadow(0 0 70px rgba(239, 68, 68, 1)) contrast(180%) brightness(1.2);
+  }
+  100% {
+    transform: scale(3.6) translateY(-25px) rotate(2deg);
+    filter: drop-shadow(0 0 100px rgba(220, 38, 38, 1)) contrast(200%) brightness(1.3);
+    opacity: 1;
+  }
+}
+
+@keyframes jumpscare-strobe {
+  0%, 100% {
+    background-color: rgba(0, 0, 0, 0.92);
+  }
+  15%, 45%, 75% {
+    background-color: rgba(185, 28, 28, 0.85);
+  }
+  30%, 60%, 90% {
+    background-color: rgba(0, 0, 0, 0.96);
+  }
+}
+
+@keyframes claw-slash-left {
+  0% {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    opacity: 0;
+    transform: scale(0.8) rotate(-25deg);
+  }
+  25% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    opacity: 1;
+    transform: scale(1.05) rotate(-22deg);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(1) rotate(-20deg);
+  }
+}
+
+@keyframes glitch-text {
+  0%, 100% {
+    text-shadow: -2px 0 red, 2px 0 cyan;
+  }
+  25% {
+    text-shadow: 3px 0 red, -3px 0 blue;
+  }
+  50% {
+    text-shadow: -3px 2px magenta, 3px -2px lime;
+  }
+  75% {
+    text-shadow: 2px -2px red, -2px 2px cyan;
+  }
+}
+
+.animate-violent-shake {
+  animation: violent-screen-shake 0.3s ease-in-out infinite;
+}
+
+.animate-jumpscare-zoom {
+  animation: jumpscare-zoom 0.95s cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+.animate-jumpscare-strobe {
+  animation: jumpscare-strobe 0.22s infinite;
+}
+
+.animate-claw-slash {
+  animation: claw-slash-left 0.4s ease-out forwards;
+}
+
+.animate-glitch-text {
+  animation: glitch-text 0.12s infinite;
+}
+
+@keyframes urgent-thump {
+  0%, 100% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.12);
+  }
+  30% {
+    transform: scale(1.02);
+  }
+  45% {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 15px currentColor);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 35px currentColor);
+  }
+}
+
+.animate-urgent-thump {
+  animation: urgent-thump 0.75s infinite cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.animate-neon-pulse {
+  animation: neon-pulse 3s infinite ease-in-out;
+}

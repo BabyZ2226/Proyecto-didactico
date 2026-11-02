@@ -1,0 +1,8 @@
+{
+  "name": "AulaPlay · Campamento de Juegos Didácticos de Enseñanza",
+  "description": "Plataforma de juegos didácticos interactivos para el aula: Escape Room de 10 cámaras, 100 Latinos Dicen por equipos y Póker del Octeto.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

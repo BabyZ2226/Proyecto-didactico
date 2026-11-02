@@ -1,0 +1,1022 @@
+[
+  {
+    "id": "escape_pack_multidisciplinar",
+    "title": "Escape Multidisciplinar: Las 10 Cámaras del Saber",
+    "description": "El desafío definitivo de 10 cámaras que integra Química, Física, Biología, Matemáticas e Historia para poner a prueba el pensamiento crítico de la clase.",
+    "subject": "Multidisciplinar",
+    "authorName": "Comunidad AulaPlay",
+    "createdAt": 1729000000000,
+    "playsCount": 311,
+    "likesCount": 142,
+    "isAiGenerated": false,
+    "tags": [
+      "Multidisciplinar",
+      "10 Cámaras",
+      "Secundaria",
+      "Bachillerato",
+      "Ciencias"
+    ],
+    "chambers": [
+      {
+        "id": "q1",
+        "chamberTitle": "Cámara 1: Encrucijada de Alquimia y Valencia",
+        "question": "Calcula el código de valencia combinando: (Electrones de valencia del Carbono) + (Electrones de valencia del Oxígeno) + (Número atómico del Hidrógeno) + (Valencia del Neón).",
+        "options": [
+          "4610 (C:4, O:6, H:1, Ne:0)",
+          "4444 (Todos tienen 4)",
+          "8888 (Octeto completo)",
+          "1234 (Secuencia simple)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "4610",
+        "hint": "El Carbono tiene 4, Oxígeno 6, Hidrógeno 1 y los gases nobles como el Neón tienen valencia 0.",
+        "subject": "Química"
+      },
+      {
+        "id": "q2",
+        "chamberTitle": "Cámara 2: Corredor de la 2ª Ley de Newton",
+        "question": "Una masa espacial de m = 25 kg experimenta una aceleración de a = 4 m/s². ¿Cuál es la Fuerza (F) en Newtons según la 2ª Ley de Newton (F = m · a)?",
+        "options": [
+          "100 N (F = 25 × 4)",
+          "29 N (F = 25 + 4)",
+          "6.25 N (F = 25 / 4)",
+          "200 N (F = 25 × 8)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "100",
+        "hint": "Multiplica directamente la masa por la aceleración: 25 × 4.",
+        "subject": "Física"
+      },
+      {
+        "id": "q3",
+        "chamberTitle": "Cámara 3: Laberinto de Código Genético",
+        "question": "Si la hebra molde de ADN es 5'- A T C G - 3', ¿cuál es la secuencia complementaria exacta de la hebra opuesta?",
+        "options": [
+          "3'- T A G C - 5' (A-T, C-G)",
+          "3'- A T C G - 5' (Idéntica)",
+          "3'- U A G C - 5' (Con Uracilo)",
+          "3'- G C T A - 5' (Invertida)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "TAGC",
+        "hint": "Adenina (A) se empareja con Timina (T), y Citosina (C) se empareja con Guanina (G).",
+        "subject": "Biología"
+      },
+      {
+        "id": "q4",
+        "chamberTitle": "Cámara 4: Bóveda de la Velocidad de la Luz",
+        "question": "¿Cuál es la aproximación fundamental de la velocidad de la luz en el vacío (c ≈ 3 × 10⁸ m/s)?",
+        "options": [
+          "300,000 km/s (3 × 10⁸ m/s)",
+          "150,000 km/s (1.5 × 10⁸ m/s)",
+          "3,000 km/s (3 × 10⁵ m/s)",
+          "1,080 km/s (1.08 × 10³ m/s)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "300000",
+        "hint": "Son trescientos mil kilómetros por segundo en el vacío.",
+        "subject": "Física"
+      },
+      {
+        "id": "q5",
+        "chamberTitle": "Cámara 5: El Enigma del Teorema de Pitágoras",
+        "question": "En un triángulo rectángulo cuyos catetos miden a = 6 m y b = 8 m, ¿cuál es la longitud exacta de la hipotenusa (c² = a² + b²)?",
+        "options": [
+          "10 m (√(36 + 64) = √100)",
+          "14 m (6 + 8)",
+          "12 m (Multiplicación)",
+          "48 m (6 × 8)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "10",
+        "hint": "Eleva al cuadrado: 6² = 36 y 8² = 64. Suma 100 y calcula la raíz cuadrada.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "q6",
+        "chamberTitle": "Cámara 6: La Central Energética Celular",
+        "question": "¿Cuál es el orgánulo celular responsable de realizar la respiración celular y sintetizar la mayor parte del ATP?",
+        "options": [
+          "Mitocondria",
+          "Ribosoma",
+          "Aparato de Golgi",
+          "Lisosoma"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ATP",
+        "hint": "Se la conoce universalmente como la \"planta de energía\" de la célula eucariota.",
+        "subject": "Biología"
+      },
+      {
+        "id": "q7",
+        "chamberTitle": "Cámara 7: La Gran Biblioteca de Alejandría",
+        "question": "¿En qué país del Mediterráneo oriental se fundó la célebre Biblioteca de Alejandría bajo la dinastía Ptolemaica?",
+        "options": [
+          "Egipto",
+          "Grecia",
+          "Italia",
+          "Persia"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "EGIPTO",
+        "hint": "Fue una de las mayores joyas culturales fundada en la ciudad portuaria del delta del río Nilo.",
+        "subject": "Historia"
+      },
+      {
+        "id": "q8",
+        "chamberTitle": "Cámara 8: Síntesis del Agua Molecular",
+        "question": "Para formar 2 moléculas de agua líquida (2 H₂O), ¿cuántos átomos totales de Hidrógeno y Oxígeno se requieren?",
+        "options": [
+          "4 de Hidrógeno y 2 de Oxígeno (6 átomos totales)",
+          "2 de Hidrógeno y 1 de Oxígeno",
+          "2 de Hidrógeno y 2 de Oxígeno",
+          "4 de Hidrógeno y 4 de Oxígeno"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "H2O",
+        "hint": "2 moléculas de H₂O implican 2 × 2 = 4 átomos de H y 2 × 1 = 2 átomos de O.",
+        "subject": "Química"
+      },
+      {
+        "id": "q9",
+        "chamberTitle": "Cámara 9: La Ley de Gravitación Universal",
+        "question": "Si se duplica la distancia (r) entre dos cuerpos masivos manteniendo sus masas iguales, ¿qué ocurre con la fuerza gravitatoria según F = G(m₁m₂)/r²?",
+        "options": [
+          "Se reduce a la cuarta parte (1/4)",
+          "Se reduce a la mitad (1/2)",
+          "Se duplica al doble (×2)",
+          "Permanece constante"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "CUARTA",
+        "hint": "La fuerza es inversamente proporcional al cuadrado de la distancia: (1/2)² = 1/4.",
+        "subject": "Física"
+      },
+      {
+        "id": "q10",
+        "chamberTitle": "Cámara 10: La Puerta de Escape Cuántica",
+        "question": "¿Cuál es el valor aproximado del número Pi (π) con cuatro decimales para desbloquear la salida definitiva?",
+        "options": [
+          "3.1416 (o 3.14159...)",
+          "2.7182 (Número e)",
+          "1.6180 (Proporción Áurea)",
+          "3.0000 (Entero aproximado)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "31416",
+        "hint": "Relación entre la longitud de una circunferencia y su diámetro.",
+        "subject": "Matemáticas"
+      }
+    ]
+  },
+  {
+    "id": "escape_pack_quimica_10",
+    "title": "Laboratorio Clandestino: 10 Fórmulas de la Alquimia",
+    "description": "10 cámaras de química experimental: enlaces iónicos y covalentes, tabla periódica, pH, estequiometría, gases ideales y reacciones moleculares.",
+    "subject": "Química",
+    "authorName": "Prof. Marie Curie",
+    "createdAt": 1729100000000,
+    "playsCount": 245,
+    "likesCount": 98,
+    "isAiGenerated": false,
+    "tags": [
+      "Química",
+      "10 Cámaras",
+      "Tabla Periódica",
+      "Enlaces",
+      "Laboratorio"
+    ],
+    "chambers": [
+      {
+        "id": "chem_1",
+        "chamberTitle": "Cámara 1: La Regla del Octeto",
+        "question": "¿Cuántos electrones de valencia buscan tener la mayoría de los átomos en su capa externa para ser químicamente estables?",
+        "options": [
+          "8 electrones (como los gases nobles)",
+          "2 electrones únicamente",
+          "18 electrones en todos los casos",
+          "4 electrones libres"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "8",
+        "hint": "El nombre \"octeto\" hace referencia directa a este número.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_2",
+        "chamberTitle": "Cámara 2: El Enlace Iónico de la Sal",
+        "question": "En la formación de Cloruro de Sodio (NaCl), ¿qué átomo cede un electrón convirtiéndose en un catión con carga positiva (+)?",
+        "options": [
+          "Sodio (Na⁺)",
+          "Cloro (Cl⁻)",
+          "Ambos comparten electrones",
+          "Ninguno cede electrones"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "NA",
+        "hint": "Los metales alcalinos del grupo 1 ceden fácilmente su único electrón de valencia.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_3",
+        "chamberTitle": "Cámara 3: El Número Atómico del Carbono",
+        "question": "El Carbono es el elemento base de la vida orgánica. ¿Cuántos protones contiene en su núcleo (Z)?",
+        "options": [
+          "6 protones",
+          "12 protones",
+          "8 protones",
+          "14 protones"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "6",
+        "hint": "Su masa atómica es aproximadamente 12, con 6 protones y 6 neutrones.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_4",
+        "chamberTitle": "Cámara 4: La Escala de pH",
+        "question": "Una disolución acuosa tiene un pH = 2. ¿Cómo se clasifica químicamente según la concentración de iones H⁺?",
+        "options": [
+          "Ácido fuerte",
+          "Neutro exacto",
+          "Base fuerte",
+          "Alcalino moderado"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ACIDO",
+        "hint": "Los valores de pH menores a 7 corresponden a sustancias ácidas.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_5",
+        "chamberTitle": "Cámara 5: La Ecuación de los Gases Ideales",
+        "question": "En la ecuación de estado de los gases ideales P · V = n · R · T, ¿qué magnitud representa la letra V?",
+        "options": [
+          "Volumen ocupado por el gas",
+          "Velocidad molecular media",
+          "Voltaje del sistema",
+          "Viscosidad dinámica"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "VOLUMEN",
+        "hint": "Se suele medir en litros o metros cúbicos.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_6",
+        "chamberTitle": "Cámara 6: La Ley de Lavoisier",
+        "question": "La Ley de Conservación de la Masa postula que en una reacción química en sistema cerrado:",
+        "options": [
+          "La masa total de los reactivos es igual a la de los productos",
+          "La masa se destruye parcialmente",
+          "La masa siempre se duplica",
+          "Los átomos se transforman en electrones puros"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "MASA",
+        "hint": "«La materia no se crea ni se destruye, solo se transforma».",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_7",
+        "chamberTitle": "Cámara 7: El Enlace Covalente del Metano",
+        "question": "¿Cuántos enlaces covalentes simples forma una molécula de Metano (CH₄) entre el átomo de carbono y los hidrógenos?",
+        "options": [
+          "4 enlaces covalentes simples",
+          "1 enlace cuádruple",
+          "2 enlaces dobles",
+          "8 enlaces"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "4",
+        "hint": "Cada uno de los cuatro hidrógenos comparte un par de electrones con el carbono central.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_8",
+        "chamberTitle": "Cámara 8: El Número de Avogadro",
+        "question": "¿Cuántas partículas contiene un mol de cualquier sustancia pura?",
+        "options": [
+          "6.022 × 10²³ partículas",
+          "3.141 × 10²³ partículas",
+          "1.000 × 10¹² partículas",
+          "9.810 × 10²⁴ partículas"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "6022",
+        "hint": "La constante de Avogadro es 6.022 × 10²³ mol⁻¹.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_9",
+        "chamberTitle": "Cámara 9: Reacciones de Óxido-Reducción",
+        "question": "En un proceso Redox, ¿qué le ocurre al agente reductor?",
+        "options": [
+          "Se oxida (pierde electrones)",
+          "Se reduce (gana protones)",
+          "Permanece inalterado",
+          "Se precipita al fondo"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "OXIDA",
+        "hint": "El agente reductor provoca la reducción del otro perdiendo él mismo electrones.",
+        "subject": "Química"
+      },
+      {
+        "id": "chem_10",
+        "chamberTitle": "Cámara 10: La Bóveda de Mendeleiev",
+        "question": "¿Cómo están ordenados los elementos químicos en la Tabla Periódica moderna?",
+        "options": [
+          "Por su número atómico creciente (Z)",
+          "Por su masa atómica decreciente",
+          "Por orden alfabético del símbolo",
+          "Por su fecha de descubrimiento"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "Z",
+        "hint": "Henry Moseley demostró que la periodicidad depende del número de protones (Z).",
+        "subject": "Química"
+      }
+    ]
+  },
+  {
+    "id": "escape_pack_biologia_10",
+    "title": "El Genoma Perdido: 10 Enigmas de la Vida y la Célula",
+    "description": "Recorrido biológico de 10 cámaras sobre genética, orgánulos celulares, fotosíntesis, evolución y fisiología del cuerpo humano.",
+    "subject": "Biología",
+    "authorName": "Prof. Charles Darwin",
+    "createdAt": 1729200000000,
+    "playsCount": 215,
+    "likesCount": 92,
+    "isAiGenerated": false,
+    "tags": [
+      "Biología",
+      "10 Cámaras",
+      "Célula",
+      "ADN",
+      "Evolución"
+    ],
+    "chambers": [
+      {
+        "id": "bio_1",
+        "chamberTitle": "Cámara 1: El Núcleo y el ADN",
+        "question": "¿Qué macromolécula contiene la información genética de las células eucariotas almacenada en el núcleo?",
+        "options": [
+          "Ácido Desoxirribonucleico (ADN)",
+          "Fosfolípidos de membrana",
+          "Glucosa simple",
+          "Triglicéridos"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ADN",
+        "hint": "Tiene estructura de doble hélice descubierta por Watson, Crick y Rosalind Franklin.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_2",
+        "chamberTitle": "Cámara 2: La Fábrica de Proteínas",
+        "question": "¿Qué complejo celular lee el ARN mensajero para sintetizar cadenas de aminoácidos?",
+        "options": [
+          "Ribosomas",
+          "Centríolos",
+          "Vacuolas",
+          "Pared celular"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "RIBOSOMA",
+        "hint": "Pueden estar libres en el citosol o adosados al retículo endoplásmico rugoso.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_3",
+        "chamberTitle": "Cámara 3: La Fotosíntesis Vegetal",
+        "question": "¿Qué pigmento de los cloroplastos absorbe la energía lumínica solar para la fotosíntesis?",
+        "options": [
+          "Clorofila",
+          "Melanina",
+          "Hemoglobina",
+          "Caroteno exclusivo"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "CLOROFILA",
+        "hint": "Es el pigmento verde característico de las hojas de las plantas.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_4",
+        "chamberTitle": "Cámara 4: Mitosis Celular",
+        "question": "¿En qué fase de la mitosis los cromosomas se alinean en el plano ecuatorial de la célula?",
+        "options": [
+          "Metafase",
+          "Profase",
+          "Anafase",
+          "Telofase"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "METAFASE",
+        "hint": "El prefijo \"meta-\" significa en medio o en el ecuador.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_5",
+        "chamberTitle": "Cámara 5: El Aparato Circulatorio",
+        "question": "¿Qué vaso sanguíneo transporta la sangre oxigenada desde el ventrículo izquierdo a todo el cuerpo humano?",
+        "options": [
+          "Arteria Aorta",
+          "Vena Cava",
+          "Arteria Pulmonar",
+          "Vena Porta"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "AORTA",
+        "hint": "Es la arteria principal y más grande de todo el organismo.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_6",
+        "chamberTitle": "Cámara 6: La Neurona y la Sinapsis",
+        "question": "¿Cuál es la prolongación larga de la neurona que conduce el impulso nervioso hacia otras células?",
+        "options": [
+          "Axón",
+          "Dendrita corta",
+          "Soma",
+          "Mielina pura"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "AXON",
+        "hint": "Transmite el potencial de acción hacia el botón terminal sináptico.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_7",
+        "chamberTitle": "Cámara 7: Leyes de Mendel",
+        "question": "Si se cruzan dos heterocigotos (Aa × Aa), ¿cuál es la probabilidad teórica de obtener descendencia con fenotipo recesivo (aa)?",
+        "options": [
+          "25% (1 de cada 4)",
+          "50% (2 de cada 4)",
+          "75% (3 de cada 4)",
+          "0% (imposible)"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "25",
+        "hint": "El cuadro de Punnett da: AA (25%), Aa (50%), aa (25%).",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_8",
+        "chamberTitle": "Cámara 8: Selección Natural",
+        "question": "Según Charles Darwin, ¿cuál es el mecanismo motor que conduce a la adaptación biológica de las especies?",
+        "options": [
+          "Selección Natural de las variaciones ventajosas",
+          "La herencia de caracteres adquiridos por uso",
+          "Mutaciones dirigidas conscientemente",
+          "Clonación asexual pasiva"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "DARWIN",
+        "hint": "Los individuos con rasgos favorables sobreviven y dejan mayor descendencia fértil.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_9",
+        "chamberTitle": "Cámara 9: El Reino de los Hongos",
+        "question": "¿De qué polisacárido estructural está compuesta la pared celular de los hongos?",
+        "options": [
+          "Quitina",
+          "Celulosa vegetal",
+          "Peptidoglicano bacteriano",
+          "Glucógeno animal"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "QUITINA",
+        "hint": "Es el mismo polímero que forma el exoesqueleto de los artrópodos.",
+        "subject": "Biología"
+      },
+      {
+        "id": "bio_10",
+        "chamberTitle": "Cámara 10: La Bóveda del Ecosistema",
+        "question": "¿Cuál es el nivel trófico que transforma la materia inorgánica en biomasa usando luz solar?",
+        "options": [
+          "Productores primarios (Autótrofos)",
+          "Consumidores secundarios",
+          "Descomponedores",
+          "Depredadores tope"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "PRODUCTORES",
+        "hint": "Plantas, algas y cianobacterias inician el flujo energético del ecosistema.",
+        "subject": "Biología"
+      }
+    ]
+  },
+  {
+    "id": "escape_pack_fisica_10",
+    "title": "El Acelerador Cuántico: 10 Leyes del Cosmos",
+    "description": "10 cámaras de física clásica y moderna: cinemática, dinámica de Newton, óptica, electromagnetismo, termodinámica y astrofísica.",
+    "subject": "Física",
+    "authorName": "Prof. Isaac Newton",
+    "createdAt": 1729300000000,
+    "playsCount": 198,
+    "likesCount": 88,
+    "isAiGenerated": false,
+    "tags": [
+      "Física",
+      "10 Cámaras",
+      "Mecánica",
+      "Newton",
+      "Cosmos"
+    ],
+    "chambers": [
+      {
+        "id": "phys_1",
+        "chamberTitle": "Cámara 1: La 1ª Ley de Newton (Inercia)",
+        "question": "Todo cuerpo permanece en reposo o en movimiento rectilíneo uniforme a menos que:",
+        "options": [
+          "Una fuerza neta externa actúe sobre él",
+          "Se acabe el tiempo disponible",
+          "La masa se convierta en luz",
+          "Se detenga la gravedad"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "INERCIA",
+        "hint": "Es el principio de inercia formulado originalmente por Galileo y Newton.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_2",
+        "chamberTitle": "Cámara 2: Energía Cinética",
+        "question": "¿Cuál es la fórmula para calcular la Energía Cinética (Ec) de un cuerpo de masa m a velocidad v?",
+        "options": [
+          "Ec = ½ · m · v²",
+          "Ec = m · g · h",
+          "Ec = m · v",
+          "Ec = F · d"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "EC",
+        "hint": "Depende linealmente de la masa y cuadráticamente de la velocidad.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_3",
+        "chamberTitle": "Cámara 3: La 3ª Ley de Newton",
+        "question": "«A toda acción le corresponde una reacción igual y opuesta». Esta ley implica que:",
+        "options": [
+          "Las fuerzas siempre ocurren en pares aplicadas sobre cuerpos distintos",
+          "La fuerza de acción siempre supera a la reacción",
+          "La fricción se anula en el aire",
+          "No existe aceleración neta"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ACCION",
+        "hint": "Si empujas la pared, la pared te empuja a ti con idéntica magnitud.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_4",
+        "chamberTitle": "Cámara 4: Ley de Ohm",
+        "question": "En un circuito eléctrico simple, la relación entre Voltaje (V), Corriente (I) y Resistencia (R) es:",
+        "options": [
+          "V = I · R",
+          "V = I / R",
+          "V = I + R",
+          "V = R / I"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "OHM",
+        "hint": "La diferencia de potencial es directamente proporcional a la intensidad de corriente.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_5",
+        "chamberTitle": "Cámara 5: Aceleración de la Gravedad Terrestre",
+        "question": "En la superficie de la Tierra, ¿cuál es el valor estándar aproximado de la aceleración gravitatoria (g)?",
+        "options": [
+          "9.8 m/s²",
+          "1.6 m/s²",
+          "3.7 m/s²",
+          "15.4 m/s²"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "98",
+        "hint": "Aproximadamente 9.8 o 9.81 metros por segundo al cuadrado.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_6",
+        "chamberTitle": "Cámara 6: Óptica y Refracción",
+        "question": "¿Qué ley física predice cómo se desvía un rayo de luz al pasar de un medio a otro con diferente índice de refracción?",
+        "options": [
+          "Ley de Snell",
+          "Ley de Coulomb",
+          "Ley de Hooke",
+          "Principio de Arquímedes"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "SNELL",
+        "hint": "n₁ · sen(θ₁) = n₂ · sen(θ₂).",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_7",
+        "chamberTitle": "Cámara 7: Termodinámica y Entropía",
+        "question": "El Segundo Principio de la Termodinámica establece que en un sistema aislado la entropía:",
+        "options": [
+          "Siempre tiende a aumentar o permanecer constante (ΔS ≥ 0)",
+          "Siempre disminuye hacia cero",
+          "Es nula a cualquier temperatura",
+          "Se convierte en masa sólida"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ENTROPIA",
+        "hint": "Determina la flecha del tiempo y el grado de dispersión energética.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_8",
+        "chamberTitle": "Cámara 8: Principio de Arquímedes",
+        "question": "Un cuerpo sumergido en un fluido experimenta un empuje vertical hacia arriba igual a:",
+        "options": [
+          "El peso del volumen de fluido desalojado",
+          "El doble del peso del cuerpo sumergido",
+          "La profundidad a la que se encuentre",
+          "La temperatura del líquido"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "EMPUJE",
+        "hint": "«¡Eureka!», el empuje boyante equilibra el peso del agua desplazada.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_9",
+        "chamberTitle": "Cámara 9: La Equivalencia Masa-Energía",
+        "question": "En la célebre ecuación de Albert Einstein E = m · c², ¿qué representa la constante c?",
+        "options": [
+          "La velocidad de la luz en el vacío",
+          "La constante cosmológica",
+          "La capacidad calorífica",
+          "La constante de gravitación"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "EINSTEIN",
+        "hint": "Aproximadamente 300,000 km/s elevada al cuadrado.",
+        "subject": "Física"
+      },
+      {
+        "id": "phys_10",
+        "chamberTitle": "Cámara 10: La Cámara Cuántica del Fotón",
+        "question": "Max Planck propuso que la energía de un fotón se transmite en paquetes discretos (\"cuantos\") proporcionales a:",
+        "options": [
+          "Su frecuencia (E = h · f)",
+          "Su amplitud de onda",
+          "Su masa en reposo",
+          "La temperatura ambiente"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "PLANCK",
+        "hint": "La constante de Planck h relaciona directamente energía con frecuencia.",
+        "subject": "Física"
+      }
+    ]
+  },
+  {
+    "id": "escape_pack_matematicas_10",
+    "title": "La Bóveda de Euclides: 10 Desafíos de Lógica y Álgebra",
+    "description": "10 cámaras de retos matemáticos: geometría, álgebra, teorema de Pitágoras, funciones, combinatoria y acertijos lógicos.",
+    "subject": "Matemáticas",
+    "authorName": "Prof. Pitágoras",
+    "createdAt": 1729400000000,
+    "playsCount": 180,
+    "likesCount": 81,
+    "isAiGenerated": false,
+    "tags": [
+      "Matemáticas",
+      "10 Cámaras",
+      "Geometría",
+      "Álgebra",
+      "Lógica"
+    ],
+    "chambers": [
+      {
+        "id": "math_1",
+        "chamberTitle": "Cámara 1: La Suma de los Ángulos del Triángulo",
+        "question": "En geometría euclidiana plana, ¿cuál es la suma de los tres ángulos interiores de cualquier triángulo?",
+        "options": [
+          "180 grados",
+          "360 grados",
+          "90 grados",
+          "270 grados"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "180",
+        "hint": "Equivale a un ángulo llano o a π radianes.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_2",
+        "chamberTitle": "Cámara 2: Ecuación Lineal",
+        "question": "Resuelve para x: 3x + 15 = 45. ¿Cuál es el valor exacto de x?",
+        "options": [
+          "x = 10 (3x = 30 → x = 10)",
+          "x = 15",
+          "x = 20",
+          "x = 5"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "10",
+        "hint": "Resta 15 a ambos lados: 3x = 30. Luego divide por 3.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_3",
+        "chamberTitle": "Cámara 3: Números Primos",
+        "question": "¿Cuál es el único número par que también es un número primo?",
+        "options": [
+          "2",
+          "0",
+          "4",
+          "6"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "2",
+        "hint": "Solo tiene dos divisores positivos: el 1 y él mismo.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_4",
+        "chamberTitle": "Cámara 4: Área del Círculo",
+        "question": "¿Cuál es la fórmula para calcular el área de un círculo de radio r?",
+        "options": [
+          "A = π · r²",
+          "A = 2 · π · r",
+          "A = π · r",
+          "A = 4 · π · r²"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "PI",
+        "hint": "Multiplica la constante Pi por el cuadrado del radio.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_5",
+        "chamberTitle": "Cámara 5: Factorial de un Número",
+        "question": "¿Cuál es el resultado de calcular 5 factorial (5!)?",
+        "options": [
+          "120 (5 × 4 × 3 × 2 × 1)",
+          "25",
+          "60",
+          "720"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "120",
+        "hint": "5 × 4 = 20; 20 × 3 = 60; 60 × 2 = 120.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_6",
+        "chamberTitle": "Cámara 6: La Pendiente de una Recta",
+        "question": "En la ecuación de la recta y = 4x - 7, ¿cuál es el valor de la pendiente (m)?",
+        "options": [
+          "4",
+          "-7",
+          "7",
+          "1/4"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "4",
+        "hint": "En la forma y = mx + b, el coeficiente de x es la pendiente m.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_7",
+        "chamberTitle": "Cámara 7: Porcentajes y Proporciones",
+        "question": "Un microscopio escolar cuesta $200 y tiene un descuento del 15%. ¿Cuánto se paga finalmente?",
+        "options": [
+          "$170 ($200 - $30)",
+          "$185",
+          "$160",
+          "$150"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "170",
+        "hint": "El 15% de 200 es 30. Resta 30 de 200.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_8",
+        "chamberTitle": "Cámara 8: Teorema Fundamental del Álgebra",
+        "question": "¿Cuántas raíces complejas (contando multiplicidad) tiene un polinomio de grado 3?",
+        "options": [
+          "Exactamente 3 raíces",
+          "1 raíz",
+          "2 raíces",
+          "Infinitas raíces"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "3",
+        "hint": "El número de raíces coincide siempre con el grado máximo del polinomio.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_9",
+        "chamberTitle": "Cámara 9: La Sucesión de Fibonacci",
+        "question": "En la secuencia 0, 1, 1, 2, 3, 5, 8, 13... ¿cuál es el número siguiente?",
+        "options": [
+          "21 (8 + 13)",
+          "19",
+          "20",
+          "26"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "21",
+        "hint": "Cada término es la suma de los dos anteriores: 8 + 13.",
+        "subject": "Matemáticas"
+      },
+      {
+        "id": "math_10",
+        "chamberTitle": "Cámara 10: La Llave de Gauss",
+        "question": "¿Cuál es la suma de los primeros 100 números enteros positivos (1 + 2 + 3 + ... + 100)?",
+        "options": [
+          "5050 (usando n(n+1)/2)",
+          "5000",
+          "10000",
+          "2550"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "5050",
+        "hint": "Aplica la célebre fórmula del joven Gauss: 100 × 101 / 2 = 5050.",
+        "subject": "Matemáticas"
+      }
+    ]
+  },
+  {
+    "id": "escape_pack_historia_10",
+    "title": "El Vórtice del Tiempo: 10 Civilizaciones de la Humanidad",
+    "description": "10 cámaras de hitos históricos universales: Mesopotamia, Egipto, Grecia, Roma, Edad Media, Renacimiento, Revolución Industrial y Era Contemporánea.",
+    "subject": "Historia",
+    "authorName": "Prof. Heródoto",
+    "createdAt": 1729500000000,
+    "playsCount": 165,
+    "likesCount": 75,
+    "isAiGenerated": false,
+    "tags": [
+      "Historia",
+      "10 Cámaras",
+      "Civilizaciones",
+      "Egipto",
+      "Roma"
+    ],
+    "chambers": [
+      {
+        "id": "hist_1",
+        "chamberTitle": "Cámara 1: La Cuna de Mesopotamia",
+        "question": "¿Entre qué dos caudalosos ríos surgió la civilización mesopotámica antigua?",
+        "options": [
+          "Tigris y Éufrates",
+          "Nilo y Jordán",
+          "Indo y Ganges",
+          "Danubio y Rin"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "TIGRIS",
+        "hint": "Mesopotamia significa etimológicamente \"tierra entre dos ríos\".",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_2",
+        "chamberTitle": "Cámara 2: La Escritura Cuneiforme",
+        "question": "¿Qué pueblo inventó una de las formas de escritura más antiguas sobre tablillas de arcilla?",
+        "options": [
+          "Los Sumerios",
+          "Los Vikingos",
+          "Los Celtas",
+          "Los Cartagineses"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "SUMER",
+        "hint": "Se asentaron en la Baja Mesopotamia hace más de 5000 años.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_3",
+        "chamberTitle": "Cámara 3: La Democracia de Atenas",
+        "question": "¿En qué polis griega floreció por primera vez la democracia directa en el siglo V a.C.?",
+        "options": [
+          "Atenas",
+          "Esparta",
+          "Tebas",
+          "Corinto"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "ATENAS",
+        "hint": "Bajo el liderazgo del orador y estratega Pericles.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_4",
+        "chamberTitle": "Cámara 4: El Primer Emperador Romano",
+        "question": "¿Quién fue el primer gobernante en ostentar el título de Emperador de Roma (Princeps)?",
+        "options": [
+          "César Augusto (Octavio)",
+          "Julio César",
+          "Nerón",
+          "Marco Aurelio"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "AUGUSTO",
+        "hint": "Hijo adoptivo de Julio César tras vencer la guerra civil en el 27 a.C.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_5",
+        "chamberTitle": "Cámara 5: La Imprenta de Tipos Móviles",
+        "question": "¿Qué inventor renacentista perfeccionó la imprenta moderna en Maguncia hacia 1440?",
+        "options": [
+          "Johannes Gutenberg",
+          "Leonardo da Vinci",
+          "Galileo Galilei",
+          "Nicolás Copérnico"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "GUTENBERG",
+        "hint": "Imprimió la famosa Biblia de 42 líneas que revolucionó la difusión del saber.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_6",
+        "chamberTitle": "Cámara 6: La Toma de la Bastilla",
+        "question": "¿En qué año comenzó la Revolución Francesa con el asalto popular a la prisión de la Bastilla?",
+        "options": [
+          "1789",
+          "1810",
+          "1776",
+          "1804"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "1789",
+        "hint": "El 14 de julio de este año emblemático del siglo XVIII.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_7",
+        "chamberTitle": "Cámara 7: La Revolución Industrial",
+        "question": "¿Qué máquina perfeccionada por James Watt fue el gran motor mecánico de la Primera Revolución Industrial?",
+        "options": [
+          "La máquina de vapor",
+          "El motor de combustión interna",
+          "La turbina hidroeléctrica",
+          "El telar electrónico"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "VAPOR",
+        "hint": "Aprovechaba la presión del vapor de agua generado por carbón mineral.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_8",
+        "chamberTitle": "Cámara 8: Declaración Universal de los Derechos Humanos",
+        "question": "¿En qué año aprobó la Asamblea General de la ONU la Declaración Universal de los Derechos Humanos?",
+        "options": [
+          "1948",
+          "1918",
+          "1968",
+          "1939"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "1948",
+        "hint": "Tres años después del final de la Segunda Guerra Mundial.",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_9",
+        "chamberTitle": "Cámara 9: La Llegada a la Luna",
+        "question": "¿Qué misión espacial tripulada logró que el ser humano pisara la Luna por primera vez en julio de 1969?",
+        "options": [
+          "Apolo 11",
+          "Vostok 1",
+          "Gemini 8",
+          "Sputnik 2"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "APOLO11",
+        "hint": "Neil Armstrong y Buzz Aldrin descendieron en el módulo lunar \"Eagle\".",
+        "subject": "Historia"
+      },
+      {
+        "id": "hist_10",
+        "chamberTitle": "Cámara 10: La Caída del Muro de Berlín",
+        "question": "¿En qué año cayó el Muro de Berlín simbolizando el fin de la Guerra Fría?",
+        "options": [
+          "1989",
+          "1991",
+          "1975",
+          "1961"
+        ],
+        "correctOptionIndex": 0,
+        "lockCode": "1989",
+        "hint": "El 9 de noviembre de este año decisivo del siglo XX.",
+        "subject": "Historia"
+      }
+    ]
+  }
+]

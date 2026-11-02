@@ -1,0 +1,858 @@
+import { LatinoAnswerSlot, LatinoGamePack, LatinosMatchState } from '../types';
+
+/**
+ * Normalizes Spanish text for forgiving, classroom-friendly survey answer matching:
+ * strips accents, punctuation, articles ("el", "la", "los", "las", "un", "una"), and lowercases.
+ */
+export function normalizeLatinoText(input: string): string {
+  return (input || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\b(el|la|los|las|un|una|unos|unas|de|del|al|en|por|para)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Checks if a user's guessed string matches any unrevealed answer slot on the board.
+ * Returns the matched index (0-based) or -1 if no match.
+ */
+export function matchLatinoAnswer(
+  userGuess: string,
+  answers: LatinoAnswerSlot[],
+  revealedIndices: number[]
+): number {
+  const cleanGuess = normalizeLatinoText(userGuess);
+  if (!cleanGuess || cleanGuess.length < 1) return -1;
+
+  const guessSingular = cleanGuess.endsWith('es') && cleanGuess.length > 4
+    ? cleanGuess.slice(0, -2)
+    : cleanGuess.endsWith('s') && cleanGuess.length > 3
+    ? cleanGuess.slice(0, -1)
+    : cleanGuess;
+
+  for (let idx = 0; idx < answers.length; idx++) {
+    if (revealedIndices.includes(idx)) continue;
+
+    const slot = answers[idx];
+    const candidates = [slot.text, ...(slot.synonyms || [])];
+
+    for (const candidate of candidates) {
+      const cleanCand = normalizeLatinoText(candidate);
+      if (!cleanCand) continue;
+
+      const candSingular = cleanCand.endsWith('es') && cleanCand.length > 4
+        ? cleanCand.slice(0, -2)
+        : cleanCand.endsWith('s') && cleanCand.length > 3
+        ? cleanCand.slice(0, -1)
+        : cleanCand;
+
+      if (
+        cleanGuess === cleanCand ||
+        guessSingular === candSingular ||
+        (cleanGuess.length >= 3 && cleanCand.includes(cleanGuess)) ||
+        (cleanCand.length >= 3 && cleanGuess.includes(cleanCand))
+      ) {
+        return idx;
+      }
+    }
+  }
+
+  return -1;
+}
+
+/**
+ * Creates a fresh match state from a selected LatinoGamePack.
+ */
+export function createInitialLatinosMatchState(
+  pack: LatinoGamePack,
+  teamAName = 'Equipo Sol ☀️',
+  teamBName = 'Equipo Rayo ⚡',
+  options?: {
+    maxStrikes?: number;
+    turnDurationSeconds?: number;
+    allowSteal?: boolean;
+    finalMultiplier?: 1 | 2 | 3;
+    maxRounds?: number;
+    shuffleRounds?: boolean;
+    startingTeam?: 'A' | 'B';
+  }
+): LatinosMatchState {
+  let roundsList = [...pack.rounds];
+  if (options?.shuffleRounds) {
+    roundsList = roundsList.sort(() => Math.random() - 0.5);
+  }
+  if (options?.maxRounds && options.maxRounds > 0) {
+    roundsList = roundsList.slice(0, options.maxRounds);
+  }
+
+  return {
+    packId: pack.id,
+    packTitle: pack.title,
+    rounds: roundsList,
+    currentRoundIndex: 0,
+    revealedIndices: [],
+    strikes: 0,
+    maxStrikes: options?.maxStrikes ?? 3,
+    turnDurationSeconds: options?.turnDurationSeconds ?? 15,
+    allowSteal: options?.allowSteal ?? true,
+    finalMultiplier: options?.finalMultiplier ?? 2,
+    activeTeam: options?.startingTeam ?? 'A',
+    stealOpportunity: false,
+    roundFinished: false,
+    roundWinnerTeam: null,
+    roundPot: 0,
+    teamAName,
+    teamBName,
+    teamAScore: 0,
+    teamBScore: 0,
+    lastGuessFeedback: null,
+    matchFinished: false,
+  };
+}
+
+/**
+ * Processes a guess from the currently active team (or stealing team).
+ */
+export function submitTeamGuess(
+  state: LatinosMatchState,
+  guess: string,
+  playerName = 'Jugador'
+): LatinosMatchState {
+  if (state.roundFinished || state.matchFinished) return state;
+
+  const currentRound = state.rounds[state.currentRoundIndex];
+  if (!currentRound) return state;
+
+  const isFinalRound = state.currentRoundIndex >= state.rounds.length - 1 && state.rounds.length > 1;
+  const multiplier = isFinalRound
+    ? (state.finalMultiplier || currentRound.multiplier || 2)
+    : (currentRound.multiplier || 1);
+  const matchedIdx = matchLatinoAnswer(guess, currentRound.answers, state.revealedIndices);
+
+  // Case 1: Correct Answer!
+  if (matchedIdx !== -1) {
+    const slot = currentRound.answers[matchedIdx];
+    const addedPoints = slot.points * multiplier;
+    const nextRevealed = [...state.revealedIndices, matchedIdx];
+    const nextPot = state.roundPot + addedPoints;
+    const allRevealed = nextRevealed.length >= currentRound.answers.length;
+
+    // If this was a steal attempt, the stealing team immediately wins the entire pot!
+    if (state.stealOpportunity) {
+      const winner = state.activeTeam;
+      return {
+        ...state,
+        revealedIndices: nextRevealed,
+        roundPot: nextPot,
+        roundFinished: true,
+        roundWinnerTeam: winner,
+        stealOpportunity: false,
+        teamAScore: winner === 'A' ? state.teamAScore + nextPot : state.teamAScore,
+        teamBScore: winner === 'B' ? state.teamBScore + nextPot : state.teamBScore,
+        lastGuessFeedback: {
+          text: `¡ROBO EXITOSO! "${slot.text}" (+${addedPoints} pts) · ¡${winner === 'A' ? state.teamAName : state.teamBName} se lleva ${nextPot} pts!`,
+          isCorrect: true,
+          playerName,
+          team: winner,
+          pointsAwarded: addedPoints,
+          timestamp: Date.now(),
+        },
+      };
+    }
+
+    // Normal turn and all answers revealed -> activeTeam wins the round pot!
+    if (allRevealed) {
+      const winner = state.activeTeam;
+      return {
+        ...state,
+        revealedIndices: nextRevealed,
+        roundPot: nextPot,
+        roundFinished: true,
+        roundWinnerTeam: winner,
+        teamAScore: winner === 'A' ? state.teamAScore + nextPot : state.teamAScore,
+        teamBScore: winner === 'B' ? state.teamBScore + nextPot : state.teamBScore,
+        lastGuessFeedback: {
+          text: `¡TABLERO COMPLETO! "${slot.text}" (+${addedPoints} pts) · ¡${winner === 'A' ? state.teamAName : state.teamBName} gana ${nextPot} pts!`,
+          isCorrect: true,
+          playerName,
+          team: winner,
+          pointsAwarded: addedPoints,
+          timestamp: Date.now(),
+        },
+      };
+    }
+
+    return {
+      ...state,
+      revealedIndices: nextRevealed,
+      roundPot: nextPot,
+      lastGuessFeedback: {
+        text: `¡ESTÁ EN EL TABLERO! #${matchedIdx + 1} "${slot.text}" (+${addedPoints} pts)`,
+        isCorrect: true,
+        playerName,
+        team: state.activeTeam,
+        pointsAwarded: addedPoints,
+        timestamp: Date.now(),
+      },
+    };
+  }
+
+  // Case 2: Wrong Answer (Strike ❌)!
+  if (state.stealOpportunity) {
+    // Steal failed! Original team (opposite of activeTeam) keeps the round pot!
+    const originalTeam: 'A' | 'B' = state.activeTeam === 'A' ? 'B' : 'A';
+    const originalTeamName = originalTeam === 'A' ? state.teamAName : state.teamBName;
+    return {
+      ...state,
+      roundFinished: true,
+      roundWinnerTeam: originalTeam,
+      stealOpportunity: false,
+      teamAScore: originalTeam === 'A' ? state.teamAScore + state.roundPot : state.teamAScore,
+      teamBScore: originalTeam === 'B' ? state.teamBScore + state.roundPot : state.teamBScore,
+      lastGuessFeedback: {
+        text: `❌ ¡FALLÓ EL ROBO! "${guess}" no está. ¡${originalTeamName} conserva los ${state.roundPot} pts!`,
+        isCorrect: false,
+        playerName,
+        team: state.activeTeam,
+        timestamp: Date.now(),
+      },
+    };
+  }
+
+  const maxAllowedStrikes = state.maxStrikes ?? 3;
+  const allowSteal = state.allowSteal ?? true;
+  const nextStrikes = state.strikes + 1;
+  const nextTeam: 'A' | 'B' = state.activeTeam === 'A' ? 'B' : 'A';
+  const nextTeamName = nextTeam === 'A' ? state.teamAName : state.teamBName;
+
+  if (nextStrikes >= maxAllowedStrikes) {
+    if (!allowSteal) {
+      const winner = state.activeTeam;
+      const winnerName = winner === 'A' ? state.teamAName : state.teamBName;
+      return {
+        ...state,
+        strikes: maxAllowedStrikes,
+        roundFinished: true,
+        roundWinnerTeam: winner,
+        stealOpportunity: false,
+        teamAScore: winner === 'A' ? state.teamAScore + state.roundPot : state.teamAScore,
+        teamBScore: winner === 'B' ? state.teamBScore + state.roundPot : state.teamBScore,
+        lastGuessFeedback: {
+          text: `❌ ¡LÍMITE DE ${maxAllowedStrikes} STRIKES ALCANZADO! Ronda finalizada (${winnerName} suma ${state.roundPot} pts).`,
+          isCorrect: false,
+          playerName,
+          team: state.activeTeam,
+          timestamp: Date.now(),
+        },
+      };
+    }
+
+    return {
+      ...state,
+      strikes: maxAllowedStrikes,
+      activeTeam: nextTeam,
+      stealOpportunity: true,
+      lastGuessFeedback: {
+        text: `❌ ¡${maxAllowedStrikes} STRIKES! Turno de ROBO DE PUNTOS para ${nextTeamName}`,
+        isCorrect: false,
+        playerName,
+        team: state.activeTeam,
+        timestamp: Date.now(),
+      },
+    };
+  }
+
+  return {
+    ...state,
+    strikes: nextStrikes,
+    activeTeam: nextTeam, // Turn switches to the other team on incorrect answer
+    lastGuessFeedback: {
+      text: `❌ ¡STRIKE ${nextStrikes}/${maxAllowedStrikes}! "${guess}" no está. Turno de ${nextTeamName}`,
+      isCorrect: false,
+      playerName,
+      team: state.activeTeam,
+      timestamp: Date.now(),
+    },
+  };
+}
+
+/**
+ * Handles turn timeout for active team in 100 Latinos Dicen.
+ */
+export function handleTurnTimeout(state: LatinosMatchState): LatinosMatchState {
+  if (state.roundFinished || state.matchFinished) return state;
+
+  const maxAllowedStrikes = state.maxStrikes ?? 3;
+  const allowSteal = state.allowSteal ?? true;
+
+  // Case 1: Timeout during Steal Opportunity
+  if (state.stealOpportunity) {
+    const originalTeam: 'A' | 'B' = state.activeTeam === 'A' ? 'B' : 'A';
+    const originalTeamName = originalTeam === 'A' ? state.teamAName : state.teamBName;
+    return {
+      ...state,
+      roundFinished: true,
+      roundWinnerTeam: originalTeam,
+      stealOpportunity: false,
+      teamAScore: originalTeam === 'A' ? state.teamAScore + state.roundPot : state.teamAScore,
+      teamBScore: originalTeam === 'B' ? state.teamBScore + state.roundPot : state.teamBScore,
+      lastGuessFeedback: {
+        text: `⏱️ ¡TIEMPO AGOTADO! Se acabó el tiempo de robo. ¡${originalTeamName} conserva ${state.roundPot} pts!`,
+        isCorrect: false,
+        playerName: 'Reloj',
+        team: state.activeTeam,
+        timestamp: Date.now(),
+      },
+    };
+  }
+
+  // Case 2: Timeout during Normal Turn
+  const nextStrikes = state.strikes + 1;
+  const nextTeam: 'A' | 'B' = state.activeTeam === 'A' ? 'B' : 'A';
+  const nextTeamName = nextTeam === 'A' ? state.teamAName : state.teamBName;
+
+  if (nextStrikes >= maxAllowedStrikes) {
+    if (!allowSteal) {
+      const winner = state.activeTeam;
+      return {
+        ...state,
+        strikes: maxAllowedStrikes,
+        roundFinished: true,
+        roundWinnerTeam: winner,
+        stealOpportunity: false,
+        teamAScore: winner === 'A' ? state.teamAScore + state.roundPot : state.teamAScore,
+        teamBScore: winner === 'B' ? state.teamBScore + state.roundPot : state.teamBScore,
+        lastGuessFeedback: {
+          text: `⏱️ ¡TIEMPO AGOTADO! ${maxAllowedStrikes} Strikes acumulados. Ronda finalizada.`,
+          isCorrect: false,
+          playerName: 'Reloj',
+          team: state.activeTeam,
+          timestamp: Date.now(),
+        },
+      };
+    }
+
+    return {
+      ...state,
+      strikes: maxAllowedStrikes,
+      activeTeam: nextTeam,
+      stealOpportunity: true,
+      lastGuessFeedback: {
+        text: `⏱️ ¡TIEMPO AGOTADO! ❌ ${maxAllowedStrikes} Strikes acumulados. Oportunidad de ROBO para ${nextTeamName}`,
+        isCorrect: false,
+        playerName: 'Reloj',
+        team: state.activeTeam,
+        timestamp: Date.now(),
+      },
+    };
+  }
+
+  return {
+    ...state,
+    strikes: nextStrikes,
+    activeTeam: nextTeam,
+    lastGuessFeedback: {
+      text: `⏱️ ¡TIEMPO AGOTADO! ❌ Strike ${nextStrikes}/${maxAllowedStrikes}. Turno de ${nextTeamName}`,
+      isCorrect: false,
+      playerName: 'Reloj',
+      team: state.activeTeam,
+      timestamp: Date.now(),
+    },
+  };
+}
+
+/**
+ * Host/Teacher directly clicks a hidden slot on the board to reveal it.
+ */
+export function revealAnswerSlotByHost(
+  state: LatinosMatchState,
+  slotIndex: number,
+  awardToPot = true
+): LatinosMatchState {
+  const currentRound = state.rounds[state.currentRoundIndex];
+  if (!currentRound || state.revealedIndices.includes(slotIndex)) return state;
+
+  const slot = currentRound.answers[slotIndex];
+  if (!slot) return state;
+
+  // If round is already finished, just flip the card for educational review without adding points
+  if (state.roundFinished || !awardToPot) {
+    return {
+      ...state,
+      revealedIndices: [...state.revealedIndices, slotIndex],
+    };
+  }
+
+  return submitTeamGuess(state, slot.text, 'Tablero');
+}
+
+/**
+ * Advances to the next round or finishes the match if on the final round.
+ */
+export function advanceToNextRound(state: LatinosMatchState): LatinosMatchState {
+  const nextIndex = state.currentRoundIndex + 1;
+  if (nextIndex >= state.rounds.length) {
+    return {
+      ...state,
+      roundFinished: true,
+      matchFinished: true,
+    };
+  }
+
+  // Alternate starting team each round
+  const nextStartingTeam: 'A' | 'B' = nextIndex % 2 === 0 ? 'A' : 'B';
+
+  return {
+    ...state,
+    currentRoundIndex: nextIndex,
+    revealedIndices: [],
+    strikes: 0,
+    activeTeam: nextStartingTeam,
+    stealOpportunity: false,
+    roundFinished: false,
+    roundWinnerTeam: null,
+    roundPot: 0,
+    lastGuessFeedback: null,
+  };
+}
+
+/**
+ * Filters and sorts the infinite library of 100 Latinos Dicen packs.
+ */
+export function filterAndSortLibrary(
+  packs: LatinoGamePack[],
+  searchQuery: string,
+  subjectFilter: string,
+  sortBy: 'popular' | 'recent' | 'likes' = 'popular'
+): LatinoGamePack[] {
+  const cleanSearch = normalizeLatinoText(searchQuery);
+
+  const filtered = packs.filter((pack) => {
+    const matchesSubject =
+      !subjectFilter ||
+      subjectFilter === 'Todos' ||
+      pack.subject.toLowerCase() === subjectFilter.toLowerCase();
+
+    if (!matchesSubject) return false;
+    if (!cleanSearch) return true;
+
+    const haystack = normalizeLatinoText(
+      [
+        pack.title,
+        pack.description,
+        pack.subject,
+        pack.authorName,
+        ...(pack.tags || []),
+        ...pack.rounds.map((r) => r.prompt),
+      ].join(' ')
+    );
+
+    return haystack.includes(cleanSearch);
+  });
+
+  return [...filtered].sort((a, b) => {
+    if (sortBy === 'recent') return b.createdAt - a.createdAt;
+    if (sortBy === 'likes') return b.likesCount - a.likesCount;
+    return b.playsCount - a.playsCount;
+  });
+}
+
+/**
+ * Pre-seeded Public Community Library of 100 Latinos Dicen Educational Packs.
+ * Accessible to everyone out of the box without needing to call AI every time.
+ */
+export const SEED_LATINOS_LIBRARY: LatinoGamePack[] = [
+  {
+    id: 'pack-quimica-cotidiana',
+    title: 'Química en la Vida Cotidiana y Tabla Periódica',
+    description: 'Encuesta a 100 estudiantes y docentes sobre los elementos, compuestos y reacciones más famosos del mundo.',
+    subject: 'Química',
+    authorName: 'Prof. Marie Curie',
+    createdAt: 1730000000000,
+    playsCount: 148,
+    likesCount: 64,
+    tags: ['tabla periódica', 'elementos', 'laboratorio', 'moléculas', 'química'],
+    rounds: [
+      {
+        id: 'q-c-1',
+        prompt: 'Menciona un elemento químico que todo el mundo conoce aunque no sea científico',
+        subject: 'Química',
+        multiplier: 1,
+        answers: [
+          { text: 'Oxígeno (O)', points: 36, synonyms: ['oxigeno', 'o2', 'o'] },
+          { text: 'Oro (Au)', points: 24, synonyms: ['oro', 'au'] },
+          { text: 'Hidrógeno (H)', points: 18, synonyms: ['hidrogeno', 'h2', 'h'] },
+          { text: 'Hierro (Fe)', points: 12, synonyms: ['hierro', 'fe', 'fierro'] },
+          { text: 'Carbono (C)', points: 10, synonyms: ['carbono', 'carbon', 'c'] },
+        ],
+      },
+      {
+        id: 'q-c-2',
+        prompt: 'Menciona una sustancia o compuesto químico que tienes en tu cocina todos los días',
+        subject: 'Química',
+        multiplier: 1,
+        answers: [
+          { text: 'Agua (H₂O)', points: 40, synonyms: ['agua', 'h2o'] },
+          { text: 'Sal de mesa (NaCl)', points: 28, synonyms: ['sal', 'cloruro de sodio', 'nacl'] },
+          { text: 'Vinagre (Ácido acético)', points: 14, synonyms: ['vinagre', 'acido acetico'] },
+          { text: 'Bicarbonato de sodio', points: 10, synonyms: ['bicarbonato', 'nahco3'] },
+          { text: 'Azúcar (Sacarosa)', points: 8, synonyms: ['azucar', 'sacarosa', 'glucosa'] },
+        ],
+      },
+      {
+        id: 'q-c-3',
+        prompt: 'Menciona un instrumento o material que siempre ves en un laboratorio de química',
+        subject: 'Química',
+        multiplier: 2,
+        answers: [
+          { text: 'Tubo de ensayo', points: 34, synonyms: ['tubo', 'tubos de ensayo', 'tubo de ensayo'] },
+          { text: 'Matraz / Erlenmeyer', points: 25, synonyms: ['matraz', 'erlenmeyer', 'balon'] },
+          { text: 'Vaso de precipitados (Beaker)', points: 18, synonyms: ['beaker', 'vaso de precipitados', 'vaso'] },
+          { text: 'Microscopio', points: 13, synonyms: ['microscopio', 'lupa'] },
+          { text: 'Mechero Bunsen', points: 10, synonyms: ['mechero', 'bunsen', 'fuego'] },
+        ],
+      },
+      {
+        id: 'q-c-4',
+        prompt: 'Menciona un gas noble de la última columna de la Tabla Periódica',
+        subject: 'Química',
+        multiplier: 3,
+        answers: [
+          { text: 'Helio (He)', points: 42, synonyms: ['helio', 'he'] },
+          { text: 'Neón (Ne)', points: 26, synonyms: ['neon', 'ne'] },
+          { text: 'Argón (Ar)', points: 14, synonyms: ['argon', 'ar'] },
+          { text: 'Kriptón (Kr)', points: 10, synonyms: ['kripton', 'cripton', 'kr'] },
+          { text: 'Xenón (Xe)', points: 8, synonyms: ['xenon', 'xe', 'radon'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pack-biologia-cuerpo',
+    title: 'Biología: Cuerpo Humano, Célula y Naturaleza',
+    description: 'Preguntas dinámicas por equipos sobre órganos, seres vivos, ecosistemas y genética para secundaria y primaria.',
+    subject: 'Biología',
+    authorName: 'Prof. Charles Darwin',
+    createdAt: 1730005000000,
+    playsCount: 132,
+    likesCount: 59,
+    tags: ['biología', 'cuerpo humano', 'célula', 'animales', 'ecosistemas'],
+    rounds: [
+      {
+        id: 'bio-1',
+        prompt: 'Menciona un órgano vital del cuerpo humano',
+        subject: 'Biología',
+        multiplier: 1,
+        answers: [
+          { text: 'Corazón', points: 38, synonyms: ['corazon'] },
+          { text: 'Cerebro', points: 28, synonyms: ['cerebro', 'mente'] },
+          { text: 'Pulmones', points: 16, synonyms: ['pulmon', 'pulmones'] },
+          { text: 'Hígado', points: 10, synonyms: ['higado'] },
+          { text: 'Riñones', points: 8, synonyms: ['rinon', 'rinones', 'estomago'] },
+        ],
+      },
+      {
+        id: 'bio-2',
+        prompt: 'Menciona una parte u orgánulo fundamental de la célula',
+        subject: 'Biología',
+        multiplier: 1,
+        answers: [
+          { text: 'Núcleo', points: 36, synonyms: ['nucleo', 'adn'] },
+          { text: 'Mitocondria', points: 25, synonyms: ['mitocondria', 'mitocondrias'] },
+          { text: 'Membrana plasmática', points: 17, synonyms: ['membrana', 'membrana celular'] },
+          { text: 'Citoplasma', points: 12, synonyms: ['citoplasma'] },
+          { text: 'Ribosomas / Cloroplasto', points: 10, synonyms: ['ribosoma', 'ribosomas', 'cloroplasto', 'pared celular'] },
+        ],
+      },
+      {
+        id: 'bio-3',
+        prompt: 'Menciona algo que una planta necesita para hacer la fotosíntesis',
+        subject: 'Biología',
+        multiplier: 2,
+        answers: [
+          { text: 'Luz solar (Sol)', points: 40, synonyms: ['sol', 'luz', 'luz solar', 'energia solar'] },
+          { text: 'Agua (H₂O)', points: 28, synonyms: ['agua', 'lluvia', 'riego'] },
+          { text: 'Dióxido de carbono (CO₂)', points: 16, synonyms: ['co2', 'dioxido de carbono', 'aire'] },
+          { text: 'Clorofila (Hojas verdes)', points: 10, synonyms: ['clorofila', 'hojas'] },
+          { text: 'Tierra / Minerales', points: 6, synonyms: ['tierra', 'minerales', 'suelo', 'nutrientes'] },
+        ],
+      },
+      {
+        id: 'bio-4',
+        prompt: 'Menciona una clase de animales vertebrados',
+        subject: 'Biología',
+        multiplier: 3,
+        answers: [
+          { text: 'Mamíferos', points: 34, synonyms: ['mamifero', 'mamiferos'] },
+          { text: 'Aves', points: 24, synonyms: ['ave', 'aves', 'pajaros'] },
+          { text: 'Reptiles', points: 18, synonyms: ['reptil', 'reptiles'] },
+          { text: 'Peces', points: 14, synonyms: ['pez', 'peces'] },
+          { text: 'Anfibios', points: 10, synonyms: ['anfibio', 'anfibios', 'ranas'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pack-cultura-latinoamerica',
+    title: 'Cultura General y Curiosidades Escolares',
+    description: 'El clásico 100 Latinos Dicen adaptado al aula para romper el hielo, repasar cultura general y activar a toda la clase.',
+    subject: 'Cultura General',
+    authorName: 'Comunidad AulaPlay',
+    createdAt: 1730010000000,
+    playsCount: 215,
+    likesCount: 92,
+    tags: ['cultura general', 'escuela', 'países', 'planetas', 'clásico'],
+    rounds: [
+      {
+        id: 'cg-1',
+        prompt: 'Menciona un planeta del Sistema Solar además de la Tierra',
+        subject: 'Cultura General',
+        multiplier: 1,
+        answers: [
+          { text: 'Marte', points: 35, synonyms: ['marte', 'planeta rojo'] },
+          { text: 'Júpiter', points: 24, synonyms: ['jupiter'] },
+          { text: 'Saturno', points: 19, synonyms: ['saturno'] },
+          { text: 'Venus', points: 12, synonyms: ['venus'] },
+          { text: 'Mercurio / Neptuno', points: 10, synonyms: ['mercurio', 'neptuno', 'urano'] },
+        ],
+      },
+      {
+        id: 'cg-2',
+        prompt: 'Menciona una excusa clásica que dice un estudiante cuando no trae la tarea',
+        subject: 'Cultura General',
+        multiplier: 1,
+        answers: [
+          { text: 'Se me quedó en la casa', points: 38, synonyms: ['se me olvido', 'se quedo en casa', 'la deje en casa', 'olvide'] },
+          { text: 'Se fue el internet / la luz', points: 24, synonyms: ['no habia internet', 'se fue la luz', 'internet', 'luz'] },
+          { text: 'No entendí el tema', points: 16, synonyms: ['no entendi', 'estaba dificil'] },
+          { text: 'Mi perro la rompió / comió', points: 12, synonyms: ['perro', 'mascota', 'se la comio el perro'] },
+          { text: 'No sabía que había tarea', points: 10, synonyms: ['no sabia', 'no escuche', 'no vine ayer'] },
+        ],
+      },
+      {
+        id: 'cg-3',
+        prompt: 'Menciona un útil escolar que los alumnos siempre piden prestado en clase',
+        subject: 'Cultura General',
+        multiplier: 2,
+        answers: [
+          { text: 'Lápiz / Bolígrafo (Lapicero)', points: 37, synonyms: ['lapiz', 'lapicero', 'boligrafo', 'pluma', 'esfero'] },
+          { text: 'Borrador (Goma de borrar)', points: 25, synonyms: ['borrador', 'goma', 'goma de borrar'] },
+          { text: 'Sacapuntas (Tajalapiz)', points: 16, synonyms: ['sacapuntas', 'tajalapiz', 'afilador'] },
+          { text: 'Corrector (Liquid Paper)', points: 12, synonyms: ['corrector', 'liquid', 'tipex'] },
+          { text: 'Regla / Calculadora', points: 10, synonyms: ['regla', 'calculadora', 'hoja'] },
+        ],
+      },
+      {
+        id: 'cg-4',
+        prompt: 'Menciona un idioma que más se enseña o habla en el mundo',
+        subject: 'Cultura General',
+        multiplier: 3,
+        answers: [
+          { text: 'Inglés', points: 42, synonyms: ['ingles', 'english'] },
+          { text: 'Español (Castellano)', points: 26, synonyms: ['espanol', 'castellano'] },
+          { text: 'Francés', points: 14, synonyms: ['frances'] },
+          { text: 'Chino Mandarín', points: 10, synonyms: ['chino', 'mandarin'] },
+          { text: 'Portugués / Alemán', points: 8, synonyms: ['portugues', 'aleman', 'italiano'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pack-fisica-energia',
+    title: 'Física: Fuerzas, Energía y Universo',
+    description: 'Reto por equipos sobre tipos de energía, grandes científicos de la física, unidades de medida y fenómenos cotidianos.',
+    subject: 'Física',
+    authorName: 'Prof. Isaac Newton',
+    createdAt: 1730015000000,
+    playsCount: 96,
+    likesCount: 47,
+    tags: ['física', 'energía', 'newton', 'electricidad', 'unidades'],
+    rounds: [
+      {
+        id: 'fis-1',
+        prompt: 'Menciona una fuente de energía renovable o limpia',
+        subject: 'Física',
+        multiplier: 1,
+        answers: [
+          { text: 'Energía Solar', points: 40, synonyms: ['solar', 'sol', 'paneles solares'] },
+          { text: 'Energía Eólica (Viento)', points: 28, synonyms: ['eolica', 'viento', 'molinos'] },
+          { text: 'Energía Hidráulica (Agua)', points: 16, synonyms: ['hidraulica', 'hidroelectrica', 'agua'] },
+          { text: 'Energía Geotérmica', points: 9, synonyms: ['geotermica', 'tierra'] },
+          { text: 'Biomasa / Mareomotriz', points: 7, synonyms: ['biomasa', 'mareomotriz', 'mar'] },
+        ],
+      },
+      {
+        id: 'fis-2',
+        prompt: 'Menciona una unidad de medida muy usada en la clase de Física',
+        subject: 'Física',
+        multiplier: 1,
+        answers: [
+          { text: 'Metro (m)', points: 32, synonyms: ['metro', 'metros', 'kilometro'] },
+          { text: 'Segundo (s)', points: 24, synonyms: ['segundo', 'segundos', 'tiempo'] },
+          { text: 'Newton (N)', points: 18, synonyms: ['newton', 'newtons', 'fuerza'] },
+          { text: 'Kilogramo (kg)', points: 15, synonyms: ['kilogramo', 'kilo', 'gramo', 'masa'] },
+          { text: 'Joule / Voltio / Watt', points: 11, synonyms: ['joule', 'julio', 'voltio', 'watt', 'amperio'] },
+        ],
+      },
+      {
+        id: 'fis-3',
+        prompt: 'Menciona un físico o científico famoso de la historia',
+        subject: 'Física',
+        multiplier: 2,
+        answers: [
+          { text: 'Albert Einstein', points: 42, synonyms: ['einstein', 'albert einstein'] },
+          { text: 'Isaac Newton', points: 28, synonyms: ['newton', 'isaac newton'] },
+          { text: 'Nikola Tesla', points: 13, synonyms: ['tesla', 'nikola tesla'] },
+          { text: 'Galileo Galilei', points: 10, synonyms: ['galileo', 'galilei'] },
+          { text: 'Stephen Hawking / Marie Curie', points: 7, synonyms: ['hawking', 'stephen hawking', 'curie', 'marie curie'] },
+        ],
+      },
+      {
+        id: 'fis-4',
+        prompt: 'Menciona un material que sea excelente conductor de la electricidad',
+        subject: 'Física',
+        multiplier: 3,
+        answers: [
+          { text: 'Cobre', points: 44, synonyms: ['cobre', 'cable de cobre'] },
+          { text: 'Oro', points: 20, synonyms: ['oro'] },
+          { text: 'Aluminio', points: 14, synonyms: ['aluminio'] },
+          { text: 'Agua con sal (Electrolitos)', points: 12, synonyms: ['agua', 'agua salada'] },
+          { text: 'Plata / Hierro', points: 10, synonyms: ['plata', 'hierro', 'metal'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pack-matematicas-agil',
+    title: 'Matemáticas: Geometría, Números y Lógica',
+    description: 'Encuesta matemática sobre figuras geométricas, operaciones, números famosos y aplicaciones en la vida diaria.',
+    subject: 'Matemáticas',
+    authorName: 'Prof. Pitágoras',
+    createdAt: 1730020000000,
+    playsCount: 110,
+    likesCount: 53,
+    tags: ['matemáticas', 'geometría', 'álgebra', 'números', 'figuras'],
+    rounds: [
+      {
+        id: 'mat-1',
+        prompt: 'Menciona una figura geométrica plana que todo niño aprende en la escuela',
+        subject: 'Matemáticas',
+        multiplier: 1,
+        answers: [
+          { text: 'Círculo', points: 34, synonyms: ['circulo', 'circunferencia'] },
+          { text: 'Cuadrado', points: 28, synonyms: ['cuadrado'] },
+          { text: 'Triángulo', points: 22, synonyms: ['triangulo'] },
+          { text: 'Rectángulo', points: 10, synonyms: ['rectangulo'] },
+          { text: 'Rombo / Pentágono', points: 6, synonyms: ['rombo', 'pentagono', 'hexagono'] },
+        ],
+      },
+      {
+        id: 'mat-2',
+        prompt: 'Menciona un número primo menor que 20',
+        subject: 'Matemáticas',
+        multiplier: 1,
+        answers: [
+          { text: 'Número 2', points: 30, synonyms: ['2', 'dos'] },
+          { text: 'Número 3', points: 24, synonyms: ['3', 'tres'] },
+          { text: 'Número 5', points: 20, synonyms: ['5', 'cinco'] },
+          { text: 'Número 7', points: 16, synonyms: ['7', 'siete'] },
+          { text: 'Número 11 / 13 / 17 / 19', points: 10, synonyms: ['11', 'once', '13', 'trece', '17', '19'] },
+        ],
+      },
+      {
+        id: 'mat-3',
+        prompt: 'Menciona un lugar o situación cotidiana donde siempre usas las matemáticas',
+        subject: 'Matemáticas',
+        multiplier: 2,
+        answers: [
+          { text: 'Supermercado / Al comprar', points: 42, synonyms: ['supermercado', 'compras', 'tienda', 'pagar', 'dinero'] },
+          { text: 'Banco / Finanzas y Ahorros', points: 22, synonyms: ['banco', 'ahorrar', 'cuentas', 'finanzas'] },
+          { text: 'En la cocina (Recetas y medidas)', points: 16, synonyms: ['cocina', 'cocinar', 'recetas', 'peso'] },
+          { text: 'Para medir el tiempo / Reloj', points: 12, synonyms: ['reloj', 'tiempo', 'hora'] },
+          { text: 'En la construcción / Arquitectura', points: 8, synonyms: ['construccion', 'arquitectura', 'medir', 'ingenieria'] },
+        ],
+      },
+      {
+        id: 'mat-4',
+        prompt: 'Menciona una rama o tema importante de las Matemáticas',
+        subject: 'Matemáticas',
+        multiplier: 3,
+        answers: [
+          { text: 'Álgebra', points: 35, synonyms: ['algebra', 'ecuaciones'] },
+          { text: 'Geometría', points: 25, synonyms: ['geometria'] },
+          { text: 'Aritmética', points: 16, synonyms: ['aritmetica', 'calculo basico'] },
+          { text: 'Cálculo / Trigonometría', points: 14, synonyms: ['calculo', 'trigonometria'] },
+          { text: 'Estadística y Probabilidad', points: 10, synonyms: ['estadistica', 'probabilidad'] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pack-historia-universal',
+    title: 'Historia Universal y Civilizaciones Antiguas',
+    description: 'Viaje por las grandes civilizaciones, inventos que cambiaron la humanidad, maravillas del mundo y épocas históricas.',
+    subject: 'Historia',
+    authorName: 'Prof. Heródoto',
+    createdAt: 1730025000000,
+    playsCount: 121,
+    likesCount: 58,
+    tags: ['historia', 'civilizaciones', 'inventos', 'egipto', 'roma'],
+    rounds: [
+      {
+        id: 'his-1',
+        prompt: 'Menciona una gran civilización de la Antigüedad o precolombina',
+        subject: 'Historia',
+        multiplier: 1,
+        answers: [
+          { text: 'Antiguo Egipto', points: 34, synonyms: ['egipto', 'egipcios', 'egipcia'] },
+          { text: 'Imperio Romano', points: 24, synonyms: ['roma', 'romanos', 'romana'] },
+          { text: 'Antigua Grecia', points: 18, synonyms: ['grecia', 'griegos', 'griega'] },
+          { text: 'Mayas / Aztecas / Incas', points: 14, synonyms: ['mayas', 'aztecas', 'incas', 'inca', 'maya'] },
+          { text: 'Mesopotamia / China', points: 10, synonyms: ['mesopotamia', 'china', 'persia'] },
+        ],
+      },
+      {
+        id: 'his-2',
+        prompt: 'Menciona uno de los inventos más importantes de la historia humana',
+        subject: 'Historia',
+        multiplier: 1,
+        answers: [
+          { text: 'La Rueda', points: 35, synonyms: ['rueda'] },
+          { text: 'La Imprenta', points: 23, synonyms: ['imprenta', 'libros', 'papel'] },
+          { text: 'La Bombilla / Electricidad', points: 18, synonyms: ['bombilla', 'foco', 'electricidad', 'luz'] },
+          { text: 'Internet / Computadora', points: 14, synonyms: ['internet', 'computadora', 'ordenador', 'telefono'] },
+          { text: 'La Máquina de Vapor / Fuego', points: 10, synonyms: ['maquina de vapor', 'vapor', 'fuego', 'penicilina'] },
+        ],
+      },
+      {
+        id: 'his-3',
+        prompt: 'Menciona un monumento histórico famoso en todo el planeta',
+        subject: 'Historia',
+        multiplier: 2,
+        answers: [
+          { text: 'Las Pirámides de Egipto', points: 36, synonyms: ['piramides', 'piramides de egipto', 'esfinge'] },
+          { text: 'El Coliseo Romano', points: 24, synonyms: ['coliseo', 'coliseo romano'] },
+          { text: 'La Gran Muralla China', points: 18, synonyms: ['muralla china', 'gran muralla'] },
+          { text: 'Machu Picchu / Chichén Itzá', points: 12, synonyms: ['machu picchu', 'chichen itza'] },
+          { text: 'Torre Eiffel / Taj Mahal', points: 10, synonyms: ['torre eiffel', 'taj mahal', 'estatua de la libertad'] },
+        ],
+      },
+      {
+        id: 'his-4',
+        prompt: 'Menciona una de las edades o etapas clásicas de la Historia',
+        subject: 'Historia',
+        multiplier: 3,
+        answers: [
+          { text: 'Edad Media (Medioevo)', points: 36, synonyms: ['edad media', 'medieval', 'medioevo'] },
+          { text: 'Prehistoria', points: 24, synonyms: ['prehistoria', 'edad de piedra'] },
+          { text: 'Edad Moderna', points: 16, synonyms: ['edad moderna', 'renacimiento'] },
+          { text: 'Edad Antigua', points: 14, synonyms: ['edad antigua', 'antiguedad'] },
+          { text: 'Edad Contemporánea', points: 10, synonyms: ['edad contemporanea', 'contemporanea'] },
+        ],
+      },
+    ],
+  },
+];
